@@ -15,8 +15,12 @@ void construct_vector( Vector *vec, const u64 size){
 
 void construct_with_initial_value( Vector * vec, const u64 size,
 		const T value){
-	if( vec == NULL){
+	if(!vec){
 		vec = malloc(sizeof(Vector));
+	}
+	if(!vec){
+		perror("malloc\n");
+		exit(1);
 	}
 	vec->m_data = malloc( sizeof(T) * size );
 	vec->m_size = size;
@@ -45,7 +49,7 @@ void destroy_vector( Vector *vec ){
 
 void print_vector( Vector const *vec ){
 	if(vec == NULL){
-		puts("null");
+		fprintf(stderr,"AVISO: Tentando desreferenciar um ponteiro nulo\n");
 		exit(0);
 	}
 	if(vec->m_data != NULL){
