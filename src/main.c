@@ -13,7 +13,7 @@ int main( int argc, const char ** const argv )
 	int shm_id;
 	Vector *shm = NULL;
 	pid_t pid;
-	T fd[2] = {0};
+	int  fd[2] = {0};
 
 	if( argc != 2 ){ 
 		USAGE
@@ -41,7 +41,7 @@ int main( int argc, const char ** const argv )
 		print_vector(&shm[i]);
 	}
 	puts("servidor vai fazer um fork");
-	pipe((int *)fd);
+	pipe(fd);
 	T sum = 0;
 	pid = fork();
 	if( pid < 0 ){
@@ -53,7 +53,7 @@ int main( int argc, const char ** const argv )
 		read(fd[READ],&sum,sizeof(sum));
 		printf("soma (filho): %lu\n",sum);
 		close(fd[READ]);
-		return EXIT_SUCCESS;
+		_exit(EXIT_SUCCESS);
 	}
 	else{
 		close(fd[READ]);
@@ -61,12 +61,12 @@ int main( int argc, const char ** const argv )
 		write(fd[WRITE],&sum,sizeof(sum));
 		printf("soma (pai): %lu\n",sum);
 		close(fd[WRITE]);
-		wait(NULL);
 	}
 	puts("servidor detectou que seu filho terminou");
 	for( usize j = 0; j < NUM_VEC; j++ ){
 		destroy_vector( &shm[j] );
 	}
+
 	shmdt( (void *) shm);
 	puts("servidor desanexou sua memoria compartilhada");
 	shmctl( shm_id, IPC_RMID, NULL);

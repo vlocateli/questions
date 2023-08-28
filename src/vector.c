@@ -4,6 +4,8 @@
 #define RAND_NUMBER(min,max)\
 	((rand() % (int) (((max) + 1) - (min))) + (min))
 #endif
+FILE *fp = NULL; 
+#define MALLOC_LOG(x,fp) fwrite(x,sizeof(x),1,fp);
 void construct_vector( Vector *vec, const u64 size){
 	if( !vec ){
 		return;
@@ -15,6 +17,7 @@ void construct_vector( Vector *vec, const u64 size){
 
 void construct_with_initial_value( Vector * vec, const u64 size,
 		const T value){
+	fp = fopen("./allocations.txt","w");
 	if(!vec){
 		vec = malloc(sizeof(Vector));
 	}
